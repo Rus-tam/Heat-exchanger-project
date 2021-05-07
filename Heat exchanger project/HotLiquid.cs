@@ -5,12 +5,16 @@
         private double HLInititialTemp;
         private double HLFinalTemp;
         private double HLViscosity;
+        private double HLHeatCapacity;
+        private double HLDensity;
 
-        public HotLiquid(double initialTemp, double finalTemp, double Viscosity)
+        public HotLiquid(double initialTemp, double finalTemp, double viscosity, double heatCapacity, double density)
         {
             HLInititialTemp = initialTemp;
             HLFinalTemp = finalTemp;
-            HLViscosity = Viscosity;
+            HLViscosity = viscosity;
+            HLHeatCapacity = heatCapacity;
+            HLDensity = density;
         }
 
         //Данные методы в будущем будут производить проверки исходных значений
@@ -28,6 +32,16 @@
         public double viscosity()
         {
             return HLViscosity;
+        }
+
+        public double heatCapacity()
+        {
+            return HLHeatCapacity;
+        }
+
+        public double density()
+        {
+            return HLDensity;
         }
     }
 }

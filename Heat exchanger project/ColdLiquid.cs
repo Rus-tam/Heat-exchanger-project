@@ -5,12 +5,16 @@
         private double CLInititialTemp;
         private double CLFinalTemp;
         private double CLViscosity;
+        private double CLHeatCapacity;
+        private double CLDensity;
 
-        public ColdLiquid(double initialTemp, double finalTemp, double Viscosity)
+        public ColdLiquid(double initialTemp, double finalTemp, double viscosity, double heatCapacity, double density)
         {
             CLInititialTemp = initialTemp;
             CLFinalTemp = finalTemp;
-            CLViscosity = Viscosity;
+            CLViscosity = viscosity;
+            CLHeatCapacity = heatCapacity;
+            CLDensity = density;
         }
 
         //Данные методы в будущем будут производить проверки исходных значений
@@ -28,6 +32,16 @@
         public double viscosity()
         {
             return CLViscosity;
+        }
+
+        public double heatCapacity()
+        {
+            return CLHeatCapacity;
+        }
+
+        public double density()
+        {
+            return CLDensity;
         }
     }
 }

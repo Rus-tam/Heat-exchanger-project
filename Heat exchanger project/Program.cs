@@ -43,9 +43,9 @@ namespace Heat_exchanger_project
         {
             Console.WriteLine("Hello World!");
 
-            HotLiquid hl = new HotLiquid(300, 200, 0.00001);
+            HotLiquid hl = new HotLiquid(300, 200, 0.00001, 25, 12);
 
-            ColdLiquid cl = new ColdLiquid(108, 148, 0.022);
+            ColdLiquid cl = new ColdLiquid(108, 148, 0.022, 14, 32);
 
             ShellTubeExchanger sl = new ShellTubeExchanger();
             var k = sl.LMTD(cl, hl);
