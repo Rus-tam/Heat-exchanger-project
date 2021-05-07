@@ -5,18 +5,13 @@ namespace Heat_exchanger_project
 
     public class Exchanger
     {
-
-    }
-
-    public class ShellTubeExchanger
-    {
         private double t1;
         private double t2;
         private double deltaTmax; //Наибольшая разность температур
         private double deltaTmin; //Наименьшая разность температур
 
         //Вычисляем среднюю движущую силу процесса
-        public double LMTD(ColdLiquid coldLiquid, HotLiquid hotLiquid)
+        public virtual double LMTD(ColdLiquid coldLiquid, HotLiquid hotLiquid)
         {
             t1 = hotLiquid.initialTemp() - coldLiquid.finalTemp();
             t2 = hotLiquid.finalTemp() - coldLiquid.initialTemp();
@@ -34,6 +29,12 @@ namespace Heat_exchanger_project
 
             return ((deltaTmax - deltaTmin) / (Math.Log(deltaTmax / deltaTmin)));
         }
+
+    }
+
+    public class ShellTubeExchanger : Exchanger
+    {
+
     }
 
     class Program
