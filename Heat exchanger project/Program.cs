@@ -5,70 +5,80 @@ namespace Heat_exchanger_project
 
     public class Exchanger
     {
-        private double t1;
-        private double t2;
-        private double deltaTmax; //Наибольшая разность температур
-        private double deltaTmin; //Наименьшая разность температур
-        private double clHeatAmount; //Количество тепла холодного теплоносителя
-        private double hlHeatAmount; //Количество тепла горячего теплоносителя
-        private double CLReynoldsNumber; //Уточненное число Рейнольдса для холодного теплоносителя
-        private double CLPrandtlNumber;
-        private double CLNusseldNumber;
+        private double HLInitialTemp;
+        public double HLFinalTemp;
+        private double CLInitialTemp;
+        private double CLFinalTemp;
+        private double HLHeatCapacity;
+        private double CLHeatCapacity;
+        private double HLDensity;
+        private double CLDensity;
+        private double HLRate;
+        private double CLRate;
+
+        public Exchanger(ColdLiquid coldLiquid, HotLiquid hotLiquid)
+        {
+            HLInitialTemp = hotLiquid.InitialTemp;
+            HLFinalTemp = hotLiquid.FinalTemp;
+            CLInitialTemp = coldLiquid.InitialTemp;
+            CLFinalTemp = coldLiquid.FinalTemp;
+            HLHeatCapacity = hotLiquid.HeatCapacity;
+            HLDensity = hotLiquid.Density;
+            CLHeatCapacity = coldLiquid.HeatCapacity;
+            CLDensity = coldLiquid.Density;
+            HLRate = hotLiquid.Rate;
+            CLRate = coldLiquid.Rate;
+        }
+
+        //Проверка теплонасыщенности потоков
+        public virtual void HeatAmount()
+        {
+            var HLHeatAmount = HLHeatCapacity * HLRate * (HLInitialTemp - HLFinalTemp);
+            var CLHeatAmount = CLHeatCapacity * CLRate * (CLFinalTemp - CLInitialTemp);
+
+            if (HLHeatAmount <= CLHeatAmount)
+            {
+                throw new Exception("Недостаточно тепла у 'горячего' потока!");
+            }
+
+            if (HLHeatAmount > CLHeatAmount)
+            {
+                HLFinalTemp = 7777.0;
+            }
+        }
 
         //Вычисляем среднюю движущую силу процесса
-        public virtual double LMTD(ColdLiquid coldLiquid, HotLiquid hotLiquid)
+        public virtual double LMTD()
         {
-            t1 = hotLiquid.InitialTemp - coldLiquid.FinalTemp;
-            t2 = hotLiquid.FinalTemp - coldLiquid.InitialTemp;
+            double Tmin = 0;
+            double Tmax = 0;
 
-            if (t1 >= t2)
+            var t1 = HLInitialTemp - CLFinalTemp;
+            var t2 = HLFinalTemp - CLInitialTemp;
+
+            if (t1 > t2)
             {
-                deltaTmax = t1;
-                deltaTmin = t2;
+                Tmax = t1;
+                Tmin = t2;
             }
             else
             {
-                deltaTmax = t2;
-                deltaTmin = t1;
+                Tmax = t2;
+                Tmin = t1;
             }
 
-            return ((deltaTmax - deltaTmin) / (Math.Log(deltaTmax / deltaTmin)));
+            return ((Tmax - Tmin) / (Math.Log(Tmax / Tmin)));
         }
 
-        //Вычисляем количество передаваемого тепла, 
-        public virtual void HeatCapacity(ColdLiquid coldLiquid, HotLiquid hotLiquid)
-        {
-            clHeatAmount = coldLiquid.Rate * coldLiquid.HeatCapacity * (coldLiquid.FinalTemp - coldLiquid.InitialTemp);
-            hlHeatAmount = hotLiquid.Rate * hotLiquid.HeatCapacity * (hotLiquid.InitialTemp - hotLiquid.FinalTemp);
-
-            if (clHeatAmount >= hlHeatAmount)
-                throw new Exception("Недостаточное количество теплоносителя!");
-            else
-                Console.WriteLine("Тепла достаточно!");
-        }
-
-        //Вычисляем скорость холодного теплоносителя
-        public virtual double CLVelocity(ColdLiquid coldLiquid, HotLiquid hotLiquid)
-        {
-            //Уточняем критерий Рейнольдса
-            CLReynoldsNumber = 10000 * (126 / 70);
-            //Определяем скорость холодного теплоносителя
-            return ((CLReynoldsNumber * coldLiquid.Viscosity) / (0.016 * coldLiquid.Density));
-        }
-
-        //Вычисляем критерий Нуссельта
-        public virtual double CLHeatTransCoeff(double CLLambda, ColdLiquid coldLiquid)
-        {
-            CLPrandtlNumber = (coldLiquid.HeatCapacity * coldLiquid.Viscosity) / (CLLambda);
-            CLReynoldsNumber = 10000 * (126.0 / 70.0);
-            CLNusseldNumber = 0.021 * Math.Pow(CLReynoldsNumber, 0.8) * Math.Pow(CLPrandtlNumber, 0.43) * 1.05 * 1;
-            return ((CLNusseldNumber * CLLambda) / (0.016));
-        }
     }
 
     public class ShellTubeExchanger : Exchanger
     {
+            public ShellTubeExchanger(ColdLiquid coldLiquid, HotLiquid hotLiquid)
+                :base(coldLiquid, hotLiquid)
+            {
 
+            }
     }
 
     class Program
@@ -79,11 +89,10 @@ namespace Heat_exchanger_project
 
             ColdLiquid cl = new ColdLiquid(108, 148, 0.0004, 2300, 852, 32.69);
 
-            ShellTubeExchanger exch = new ShellTubeExchanger();
-
-            Console.WriteLine(exch.LMTD(cl, hl));
-            exch.HeatCapacity(cl, hl);
-            Console.WriteLine(exch.CLHeatTransCoeff(0.14, cl));
+            ShellTubeExchanger exch = new ShellTubeExchanger(cl, hl);
+            Console.WriteLine(exch.LMTD());
+            exch.HeatAmount();
+            Console.WriteLine(exch.LMTD());
 
         }
     }
