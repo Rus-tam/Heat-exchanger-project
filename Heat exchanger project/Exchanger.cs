@@ -40,10 +40,6 @@ namespace Heat_exchanger_project
                 throw new Exception("Недостаточно тепла у 'горячего' потока!");
             }
 
-            if (HLHeatAmount > CLHeatAmount)
-            {
-                HLFinalTemp = 7777.0;
-            }
         }
 
         //Вычисляем среднюю движущую силу процесса
