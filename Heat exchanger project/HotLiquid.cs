@@ -3,20 +3,7 @@
     public class HotLiquid
     {
         public double InitialTemp { get; }
-
-        private double _FinalTemp;
-        public double FinalTemp
-        {
-            get
-            {
-                return _FinalTemp;
-            }
-            set
-            {
-                _FinalTemp = value;
-            }
-        }
-
+        public double FinalTemp { get;  }
         public double Viscosity { get; }
         public double HeatCapacity { get; }
         public double Density { get; }

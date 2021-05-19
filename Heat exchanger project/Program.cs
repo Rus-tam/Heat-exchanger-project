@@ -6,7 +6,7 @@ namespace Heat_exchanger_project
     public class Exchanger
     {
         private double HLInitialTemp;
-        public double HLFinalTemp;
+        private double HLFinalTemp;
         private double CLInitialTemp;
         private double CLFinalTemp;
         private double HLHeatCapacity;
